@@ -1,19 +1,23 @@
 <?php
 
-$arr_link = [
-  "html" => "HTML / CSS",
-  "js" => "JS",
-  "php" => "PHP",
-  "web-master" => "Все для веб мастера",
-];
+require_once "./Controller/DatabaseController.php";
+require_once "./Controller/CategoriesController.php";
+
+$db = DatabaseController::getInstance();
+$conn = $db->getConnect();
+// $create_categories = new CategoriesController($conn);
+// $create_categories->createCategories("");
+
+$get_categories = new CategoriesController($conn);
+$categories = $get_categories->getCategories();
 
 ?>
 
 <div class="p-3">
   <ul class="container m-auto flex items-center gap-5">
-    <?php foreach ($arr_link as $link => $name): ?>
+    <?php foreach ($categories as $category): ?>
       <li>
-        <a class="text-[#2D3548] transition-all duration-500 hover:text-[#467AE9]" href="<?= $link; ?>"> <?= $name; ?> </a>
+        <a class="text-[#2D3548] transition-all duration-500 hover:text-[#467AE9]" href="/category/<?= $category['slug']; ?>"> <?= $category['name']; ?> </a>
       </li>
     <?php endforeach; ?>
   </ul>
