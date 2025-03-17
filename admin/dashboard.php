@@ -74,7 +74,7 @@ include "layout/head.php";
 
       <!-- Recent Activity Section -->
       <div class="bg-white rounded-lg shadow-sm p-6 mt-6">
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col justify-between items-center mb-6 md:flex-row">
           <h3 class="text-xl font-semibold text-gray-800">Последняя активность</h3>
           <div class="flex space-x-2">
             <button onclick="showTab('posts')" id="postsTab" class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-100 text-blue-800">Посты</button>
