@@ -27,8 +27,10 @@ post('/logout', function () {
   header("Location: /");
 });
 
-
 get('/category/$slug', 'pages/category.php');
+
+
+get('/admin', 'admin/dashboard.php');
 
 
 any('/404', 'pages/404.php');
