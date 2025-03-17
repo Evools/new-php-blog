@@ -5,6 +5,7 @@ require_once "./Controller/CategoriesController.php";
 
 $db = DatabaseController::getInstance();
 $conn = $db->getConnect();
+
 // $create_categories = new CategoriesController($conn);
 // $create_categories->createCategories("");
 
@@ -13,7 +14,7 @@ $categories = $get_categories->getCategories();
 
 ?>
 
-<div class="p-3">
+<div class="p-3 bg-gray-50 mb-3">
   <ul class="container m-auto flex items-center gap-5">
     <?php foreach ($categories as $category): ?>
       <li>
