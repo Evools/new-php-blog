@@ -102,8 +102,9 @@ class CategoriesController
   public function getTotalCategories()
   {
     $query = "SELECT COUNT(*) as total FROM `categories`";
-    $result = mysqli_query($this->conn, $query);
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'];
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result['total'];
   }
 }

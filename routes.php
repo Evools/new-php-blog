@@ -45,7 +45,10 @@ function adminAuth($path)
 
 get('/admin', adminAuth('admin/dashboard.php'));
 get('/admin/categories', adminAuth('admin/categories.php'));
-get('/admin/posts', adminAuth('admin/posts.php'));
-get('/admin/users', adminAuth('admin/users.php'));
+get('/admin/posts', adminAuth('admin/posts/view.php'));
+
+get('/admin/users', adminAuth('admin/users/view.php'));
+get('/admin/users/edit', adminAuth('admin/users/edit.php'));
+get('/admin/users/create', adminAuth('admin/users/create.php'));
 
 any('/404', 'pages/404.php');

@@ -12,52 +12,57 @@ class PostController
   public function getTotalPosts()
   {
     $query = "SELECT COUNT(*) as total FROM posts";
-    $result = mysqli_query($this->db, $query);
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'];
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result['total'];
   }
 
   public function getRecentPosts($limit = 5)
   {
-    $query = "SELECT id, title, created_at, status FROM posts ORDER BY created_at DESC LIMIT $limit";
-    $result = mysqli_query($this->db, $query);
-    $posts = [];
-
-    while ($row = mysqli_fetch_assoc($result)) {
-      $posts[] = $row;
-    }
-
-    return $posts;
+    $query = "SELECT id, title, created_at, status FROM posts ORDER BY created_at DESC LIMIT :limit";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public function createPost($title, $content, $category_id, $user_id)
   {
-    $title = mysqli_real_escape_string($this->db, $title);
-    $content = mysqli_real_escape_string($this->db, $content);
-
     $query = "INSERT INTO posts (title, content, category_id, user_id, created_at) 
-                  VALUES ('$title', '$content', $category_id, $user_id, NOW())";
+              VALUES (:title, :content, :category_id, :user_id, NOW())";
 
-    return mysqli_query($this->db, $query);
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':title', $title);
+    $stmt->bindParam(':content', $content);
+    $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+
+    return $stmt->execute();
   }
 
   public function updatePost($id, $title, $content, $category_id)
   {
-    $title = mysqli_real_escape_string($this->db, $title);
-    $content = mysqli_real_escape_string($this->db, $content);
-
     $query = "UPDATE posts 
-                  SET title = '$title', 
-                      content = '$content', 
-                      category_id = $category_id 
-                  WHERE id = $id";
+              SET title = :title, 
+                  content = :content, 
+                  category_id = :category_id 
+              WHERE id = :id";
 
-    return mysqli_query($this->db, $query);
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->bindParam(':title', $title);
+    $stmt->bindParam(':content', $content);
+    $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+
+    return $stmt->execute();
   }
 
   public function deletePost($id)
   {
-    $query = "DELETE FROM posts WHERE id = $id";
-    return mysqli_query($this->db, $query);
+    $query = "DELETE FROM posts WHERE id = :id";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    return $stmt->execute();
   }
 }

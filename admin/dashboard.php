@@ -1,5 +1,23 @@
-<?php $titleName = "Админ панель"; ?>
-<?php include "layout/head.php"; ?>
+<?php
+require_once "./Controller/DatabaseController.php";
+require_once "./Controller/CategoriesController.php";
+require_once "./Controller/UsersController.php";
+require_once "./Controller/PostController.php";
+
+$db = DatabaseController::getInstance();
+$conn = $db->getConnect();
+
+$users = new UserController($conn);
+$categories = new CategoriesController($conn);
+$posts = new PostController($conn);
+
+$totalUsers = $users->getTotalUsers();
+$totalCategories = $categories->getTotalCategories();
+$totalPosts = $posts->getTotalPosts();
+
+$titleName = "Админ панель";
+include "layout/head.php";
+?>
 
 <main>
   <?php include "admin/layout/sidebar.php"; ?>
@@ -15,12 +33,11 @@
             </div>
             <div class="ml-4">
               <h3 class="text-lg font-semibold text-gray-700">Всего постов</h3>
-              <p class="text-3xl font-bold text-gray-900">12</p>
+              <p class="text-3xl font-bold text-gray-900"><?= $totalPosts ?></p>
             </div>
           </div>
         </div>
 
-        <!-- Users Stats -->
         <div class="bg-white rounded-lg shadow-sm p-6">
           <div class="flex items-center">
             <div class="p-3 rounded-full bg-green-100 text-green-600">
@@ -30,12 +47,11 @@
             </div>
             <div class="ml-4">
               <h3 class="text-lg font-semibold text-gray-700">Пользователи</h3>
-              <p class="text-3xl font-bold text-gray-900">6</p>
+              <p class="text-3xl font-bold text-gray-900"><?= $totalUsers ?></p>
             </div>
           </div>
         </div>
 
-        <!-- Categories Stats -->
         <div class="bg-white rounded-lg shadow-sm p-6">
           <div class="flex items-center">
             <div class="p-3 rounded-full bg-purple-100 text-purple-600">
@@ -45,7 +61,7 @@
             </div>
             <div class="ml-4">
               <h3 class="text-lg font-semibold text-gray-700">Категории</h3>
-              <p class="text-3xl font-bold text-gray-900">10</p>
+              <p class="text-3xl font-bold text-gray-900"><?= $totalCategories ?></p>
             </div>
           </div>
         </div>
@@ -55,33 +71,19 @@
       <div class="bg-white rounded-lg shadow-sm p-6 mt-6">
         <h3 class="text-xl font-semibold text-gray-800 mb-4">Последняя активность</h3>
         <div class="space-y-4">
-          <div class="flex items-center justify-between border-b pb-3">
-            <div>
-              <h4 class="font-medium text-gray-800">Как создать свой первый пост</h4>
-              <p class="text-sm text-gray-500">01.01.2024 15:30</p>
+          <?php
+          $recentPosts = $posts->getRecentPosts(5); // Get 5 most recent posts
+          foreach ($recentPosts as $post): ?>
+            <div class="flex items-center justify-between border-b pb-3">
+              <div>
+                <h4 class="font-medium text-gray-800"><?= htmlspecialchars($post['title']) ?></h4>
+                <p class="text-sm text-gray-500"><?= date('d.m.Y H:i', strtotime($post['created_at'])) ?></p>
+              </div>
+              <span class="px-3 py-1 text-sm rounded-full <?= $post['status'] === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' ?>">
+                <?= $post['status'] === 'published' ? 'Опубликован' : 'Черновик' ?>
+              </span>
             </div>
-            <span class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">
-              Опубликован
-            </span>
-          </div>
-          <div class="flex items-center justify-between border-b pb-3">
-            <div>
-              <h4 class="font-medium text-gray-800">Топ 10 JavaScript фреймворков</h4>
-              <p class="text-sm text-gray-500">01.01.2024 14:45</p>
-            </div>
-            <span class="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">
-              Черновик
-            </span>
-          </div>
-          <div class="flex items-center justify-between border-b pb-3">
-            <div>
-              <h4 class="font-medium text-gray-800">Введение в PHP 8</h4>
-              <p class="text-sm text-gray-500">01.01.2024 12:15</p>
-            </div>
-            <span class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">
-              Опубликован
-            </span>
-          </div>
+          <?php endforeach; ?>
         </div>
       </div>
     </div>
