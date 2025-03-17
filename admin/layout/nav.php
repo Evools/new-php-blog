@@ -1,6 +1,7 @@
 <?php
 
 $arr_links = [
+  "Dashboard" => "/admin/",
   "Новости" => "/admin/news/",
   "Категории" => "/admin/categories/",
   "Пользователи" => "/admin/users/",

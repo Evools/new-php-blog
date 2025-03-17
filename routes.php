@@ -30,7 +30,22 @@ post('/logout', function () {
 get('/category/$slug', 'pages/category.php');
 
 
-get('/admin', 'admin/dashboard.php');
 
+// Доступ к админ панели только у тех у кого роль admin
+function adminAuth($path)
+{
+  return function () use ($path) {
+    if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+      header("Location: /");
+      exit();
+    }
+    require __DIR__ . '/' . $path;
+  };
+}
+
+get('/admin', adminAuth('admin/dashboard.php'));
+get('/admin/categories', adminAuth('admin/categories.php'));
+get('/admin/posts', adminAuth('admin/posts.php'));
+get('/admin/users', adminAuth('admin/users.php'));
 
 any('/404', 'pages/404.php');

@@ -92,4 +92,11 @@ class UserController
       return false;
     }
   }
+  public function getTotalUsers()
+  {
+    $query = "SELECT COUNT(*) as total FROM users";
+    $result = mysqli_query($this->conn, $query);
+    $row = mysqli_fetch_assoc($result);
+    return $row['total'];
+  }
 }
