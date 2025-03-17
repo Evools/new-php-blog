@@ -47,7 +47,11 @@ get('/admin', adminAuth('admin/dashboard.php'));
 get('/admin/categories', adminAuth('admin/categories.php'));
 get('/admin/posts', adminAuth('admin/posts/view.php'));
 
+// Update the users routes
 get('/admin/users', adminAuth('admin/users/view.php'));
+// Update or add this route
+post('/admin/users/delete', adminAuth('admin/users/delete.php'));
+
 get('/admin/users/edit', adminAuth('admin/users/edit.php'));
 get('/admin/users/create', adminAuth('admin/users/create.php'));
 

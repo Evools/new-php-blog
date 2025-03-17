@@ -1,3 +1,15 @@
+<?php
+
+require_once "./Controller/DatabaseController.php";
+require_once "./Controller/CategoriesController.php";
+
+$db = DatabaseController::getInstance();
+$conn = $db->getConnect();
+$categories = new CategoriesController($conn);
+$totalCategories = $categories->getTotalCategories();
+
+?>
+
 <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
     <div class="flex items-center justify-between">
@@ -68,7 +80,7 @@
             <path d="M5 18H3" />
           </svg>
           <span class="flex-1 ms-3 whitespace-nowrap">Категории</span>
-          <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">6</span>
+          <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full"><?= $totalCategories; ?></span>
         </a>
       </li>
       <li>

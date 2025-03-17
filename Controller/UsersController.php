@@ -42,6 +42,22 @@ class UserController
     }
   }
 
+  public function deleteUser($id)
+  {
+    try {
+      $sql = "DELETE FROM users WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+      if ($stmt->execute() && $stmt->rowCount() > 0) {
+        return true;
+      }
+      return false;
+    } catch (PDOException $e) {
+      return false;
+    }
+  }
+
   public function getAllUsers()
   {
     $sql = "SELECT * FROM users";
