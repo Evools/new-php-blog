@@ -15,7 +15,7 @@ $totalUsers = $users->getTotalUsers();
 $totalCategories = $categories->getTotalCategories();
 $totalPosts = $posts->getTotalPosts();
 
-// Add these lines to fetch recent activities
+// Добавляем список последних постов, категорий и пользователей
 $recentPosts = $posts->getRecentPosts(5);
 $recentCategories = $categories->getRecentCategories(3);
 $recentUsers = $users->getRecentUsers(3);
@@ -72,7 +72,6 @@ include "layout/head.php";
         </div>
       </div>
 
-      <!-- Recent Activity Section -->
       <div class="bg-white rounded-lg shadow-sm p-6 mt-6">
         <div class="flex flex-col justify-between items-center mb-6 md:flex-row">
           <h3 class="text-xl font-semibold text-gray-800">Последняя активность</h3>
@@ -83,7 +82,6 @@ include "layout/head.php";
           </div>
         </div>
 
-        <!-- Posts Tab -->
         <div id="postsContent" class="space-y-4">
           <?php if ($recentPosts): foreach ($recentPosts as $post): ?>
               <div class="flex items-center justify-between border-b pb-3">
@@ -105,7 +103,6 @@ include "layout/head.php";
           endif; ?>
         </div>
 
-        <!-- Categories Tab -->
         <div id="categoriesContent" class="space-y-4 hidden">
           <?php if ($recentCategories): foreach ($recentCategories as $category): ?>
               <div class="flex items-center justify-between border-b pb-3">
@@ -123,7 +120,6 @@ include "layout/head.php";
           endif; ?>
         </div>
 
-        <!-- Users Tab -->
         <div id="usersContent" class="space-y-4 hidden">
           <?php if ($recentUsers): foreach ($recentUsers as $user): ?>
               <div class="flex items-center justify-between border-b pb-3">
@@ -145,22 +141,18 @@ include "layout/head.php";
 
       <script>
         function showTab(tabName) {
-          // Hide all content
           document.getElementById('postsContent').classList.add('hidden');
           document.getElementById('categoriesContent').classList.add('hidden');
           document.getElementById('usersContent').classList.add('hidden');
 
-          // Reset all tab buttons
           document.getElementById('postsTab').classList.remove('bg-blue-100', 'text-blue-800');
           document.getElementById('categoriesTab').classList.remove('bg-blue-100', 'text-blue-800');
           document.getElementById('usersTab').classList.remove('bg-blue-100', 'text-blue-800');
 
-          // Add hover state to all tabs
           document.getElementById('postsTab').classList.add('text-gray-600', 'hover:bg-gray-100');
           document.getElementById('categoriesTab').classList.add('text-gray-600', 'hover:bg-gray-100');
           document.getElementById('usersTab').classList.add('text-gray-600', 'hover:bg-gray-100');
 
-          // Show selected content and highlight tab
           document.getElementById(tabName + 'Content').classList.remove('hidden');
           document.getElementById(tabName + 'Tab').classList.remove('text-gray-600', 'hover:bg-gray-100');
           document.getElementById(tabName + 'Tab').classList.add('bg-blue-100', 'text-blue-800');
