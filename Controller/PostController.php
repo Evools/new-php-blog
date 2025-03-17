@@ -20,7 +20,11 @@ class PostController
 
   public function getRecentPosts($limit = 5)
   {
-    $query = "SELECT id, title, created_at, status FROM posts ORDER BY created_at DESC LIMIT :limit";
+    $query = "SELECT p.id, p.title, p.created_at, p.status, u.name as author_name, c.name as category_name 
+              FROM posts p 
+              LEFT JOIN users u ON p.user_id = u.id 
+              LEFT JOIN categories c ON p.category_id = c.id 
+              ORDER BY p.created_at DESC LIMIT :limit";
     $stmt = $this->db->prepare($query);
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->execute();

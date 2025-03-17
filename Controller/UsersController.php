@@ -100,4 +100,12 @@ class UserController
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result['total'];
   }
+  public function getRecentUsers($limit = 3)
+  {
+    $query = "SELECT name, role, created_at FROM users ORDER BY created_at DESC LIMIT :limit";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }

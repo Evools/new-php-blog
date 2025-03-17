@@ -107,4 +107,13 @@ class CategoriesController
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result['total'];
   }
+
+  public function getRecentCategories($limit = 3)
+  {
+    $query = "SELECT name, created_at FROM categories ORDER BY created_at DESC LIMIT :limit";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }

@@ -15,6 +15,11 @@ $totalUsers = $users->getTotalUsers();
 $totalCategories = $categories->getTotalCategories();
 $totalPosts = $posts->getTotalPosts();
 
+// Add these lines to fetch recent activities
+$recentPosts = $posts->getRecentPosts(5);
+$recentCategories = $categories->getRecentCategories(3);
+$recentUsers = $users->getRecentUsers(3);
+
 $titleName = "Админ панель";
 include "layout/head.php";
 ?>
@@ -69,23 +74,98 @@ include "layout/head.php";
 
       <!-- Recent Activity Section -->
       <div class="bg-white rounded-lg shadow-sm p-6 mt-6">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Последняя активность</h3>
-        <div class="space-y-4">
-          <?php
-          $recentPosts = $posts->getRecentPosts(5); // Get 5 most recent posts
-          foreach ($recentPosts as $post): ?>
-            <div class="flex items-center justify-between border-b pb-3">
-              <div>
-                <h4 class="font-medium text-gray-800"><?= htmlspecialchars($post['title']) ?></h4>
-                <p class="text-sm text-gray-500"><?= date('d.m.Y H:i', strtotime($post['created_at'])) ?></p>
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-semibold text-gray-800">Последняя активность</h3>
+          <div class="flex space-x-2">
+            <button onclick="showTab('posts')" id="postsTab" class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-100 text-blue-800">Посты</button>
+            <button onclick="showTab('categories')" id="categoriesTab" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100">Категории</button>
+            <button onclick="showTab('users')" id="usersTab" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100">Пользователи</button>
+          </div>
+        </div>
+
+        <!-- Posts Tab -->
+        <div id="postsContent" class="space-y-4">
+          <?php if ($recentPosts): foreach ($recentPosts as $post): ?>
+              <div class="flex items-center justify-between border-b pb-3">
+                <div>
+                  <h4 class="font-medium text-gray-800"><?= htmlspecialchars($post['title']) ?></h4>
+                  <p class="text-sm text-gray-500">
+                    Автор: <?= htmlspecialchars($post['author_name']) ?>
+                    <?php if ($post['category_name']): ?>
+                      • Категория: <?= htmlspecialchars($post['category_name']) ?>
+                    <?php endif; ?>
+                    • <?= date('d.m.Y H:i', strtotime($post['created_at'])) ?>
+                  </p>
+                </div>
+                <span class="px-3 py-1 text-sm rounded-full <?= $post['status'] === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' ?>">
+                  <?= $post['status'] === 'published' ? 'Опубликован' : 'Черновик' ?>
+                </span>
               </div>
-              <span class="px-3 py-1 text-sm rounded-full <?= $post['status'] === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' ?>">
-                <?= $post['status'] === 'published' ? 'Опубликован' : 'Черновик' ?>
-              </span>
-            </div>
-          <?php endforeach; ?>
+          <?php endforeach;
+          endif; ?>
+        </div>
+
+        <!-- Categories Tab -->
+        <div id="categoriesContent" class="space-y-4 hidden">
+          <?php if ($recentCategories): foreach ($recentCategories as $category): ?>
+              <div class="flex items-center justify-between border-b pb-3">
+                <div>
+                  <h4 class="font-medium text-gray-800">Новая категория: <?= htmlspecialchars($category['name']) ?></h4>
+                  <p class="text-sm text-gray-500">
+                    <?= date('d.m.Y H:i', strtotime($category['created_at'])) ?>
+                  </p>
+                </div>
+                <span class="px-3 py-1 text-sm rounded-full bg-purple-100 text-purple-800">
+                  Категория
+                </span>
+              </div>
+          <?php endforeach;
+          endif; ?>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="usersContent" class="space-y-4 hidden">
+          <?php if ($recentUsers): foreach ($recentUsers as $user): ?>
+              <div class="flex items-center justify-between border-b pb-3">
+                <div>
+                  <h4 class="font-medium text-gray-800">Новый пользователь: <?= htmlspecialchars($user['name']) ?></h4>
+                  <p class="text-sm text-gray-500">
+                    <?= $user['role'] === 'admin' ? 'Администратор' : 'Пользователь' ?>
+                    • <?= date('d.m.Y H:i', strtotime($user['created_at'])) ?>
+                  </p>
+                </div>
+                <span class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">
+                  Пользователь
+                </span>
+              </div>
+          <?php endforeach;
+          endif; ?>
         </div>
       </div>
+
+      <script>
+        function showTab(tabName) {
+          // Hide all content
+          document.getElementById('postsContent').classList.add('hidden');
+          document.getElementById('categoriesContent').classList.add('hidden');
+          document.getElementById('usersContent').classList.add('hidden');
+
+          // Reset all tab buttons
+          document.getElementById('postsTab').classList.remove('bg-blue-100', 'text-blue-800');
+          document.getElementById('categoriesTab').classList.remove('bg-blue-100', 'text-blue-800');
+          document.getElementById('usersTab').classList.remove('bg-blue-100', 'text-blue-800');
+
+          // Add hover state to all tabs
+          document.getElementById('postsTab').classList.add('text-gray-600', 'hover:bg-gray-100');
+          document.getElementById('categoriesTab').classList.add('text-gray-600', 'hover:bg-gray-100');
+          document.getElementById('usersTab').classList.add('text-gray-600', 'hover:bg-gray-100');
+
+          // Show selected content and highlight tab
+          document.getElementById(tabName + 'Content').classList.remove('hidden');
+          document.getElementById(tabName + 'Tab').classList.remove('text-gray-600', 'hover:bg-gray-100');
+          document.getElementById(tabName + 'Tab').classList.add('bg-blue-100', 'text-blue-800');
+        }
+      </script>
     </div>
   </div>
 </main>
