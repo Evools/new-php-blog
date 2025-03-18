@@ -16,17 +16,6 @@ class UserController
 
   public function createUser($name, $email, $password, $role)
   {
-    $db = "CREATE TABLE IF NOT EXISTS `users` (
-      id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
-      password VARCHAR(255) NOT NULL,
-      role VARCHAR(255) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )";
-    $this->conn->exec($db);
-
     $sql = "INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, :role)";
 
     $stmt = $this->conn->prepare($sql);
