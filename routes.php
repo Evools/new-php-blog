@@ -51,6 +51,7 @@ get('/admin/posts', adminAuth('admin/posts/view.php'));
 get('/admin/users', adminAuth('admin/users/view.php'));
 // Update or add this route
 post('/admin/users/delete', adminAuth('admin/users/delete.php'));
+post('/admin/users/create', adminAuth('admin/users/create.php'));
 
 get('/admin/users/edit', adminAuth('admin/users/edit.php'));
 get('/admin/users/create', adminAuth('admin/users/create.php'));

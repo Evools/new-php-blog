@@ -178,7 +178,7 @@ $get_all_users = $users->getAllUsers();
 
 
 <script>
-  const itemsPerPage = 15;
+  const itemsPerPage = 10;
   let currentPage = 1;
   let filteredUsers = [];
 
