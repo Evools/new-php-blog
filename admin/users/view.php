@@ -29,11 +29,51 @@ $get_all_users = $users->getAllUsers();
       <div class="flex-1">
         <input type="text" id="searchInput" placeholder="Поиск пользователей..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
-      <select id="roleFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-        <option value="">Все роли</option>
-        <option value="admin">Администратор</option>
-        <option value="user">Пользователь</option>
-      </select>
+
+      <div class="relative">
+        <button id="roleDropdownButton" class="px-4 py-2 w-48 text-left bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 inline-flex items-center justify-between">
+          <span id="selectedRole" class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-quote text-gray-500">
+              <path d="M17 6H3" />
+              <path d="M21 12H8" />
+              <path d="M21 18H8" />
+              <path d="M3 12v6" />
+            </svg>
+            Все роли
+          </span>
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div id="roleDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+          <div class="py-1">
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer" data-value="">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-quote text-gray-500">
+                <path d="M17 6H3" />
+                <path d="M21 12H8" />
+                <path d="M21 18H8" />
+                <path d="M3 12v6" />
+              </svg>
+              Все роли
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer" data-value="admin">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check text-indigo-500">
+                <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              Администратор
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer" data-value="user">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-red-500">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Пользователь
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="bg-white rounded-lg shadow">
@@ -181,20 +221,18 @@ $get_all_users = $users->getAllUsers();
   const itemsPerPage = 10;
   let currentPage = 1;
   let filteredUsers = [];
+  let selectedValue = '';
 
-  // Получить всех пользователей из таблицы
+  // Get all users from table
   function getAllUsers() {
     return Array.from(document.querySelectorAll('#usersTableBody tr'));
   }
 
-  // Функция фильтра и поиска
   function filterUsers() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const roleFilter = document.getElementById('roleFilter').value;
     const allUsers = getAllUsers();
 
-    // Инициализируем filteredUsers со всеми пользователями, если фильтры не применены
-    if (searchTerm === '' && roleFilter === '') {
+    if (searchTerm === '' && selectedValue === '') {
       filteredUsers = allUsers;
     } else {
       filteredUsers = allUsers.filter(user => {
@@ -203,7 +241,7 @@ $get_all_users = $users->getAllUsers();
         const userRole = user.dataset.role;
 
         const matchesSearch = userName.includes(searchTerm) || userEmail.includes(searchTerm);
-        const matchesRole = roleFilter === '' || userRole === roleFilter;
+        const matchesRole = selectedValue === '' || userRole === selectedValue;
 
         return matchesSearch && matchesRole;
       });
@@ -213,14 +251,42 @@ $get_all_users = $users->getAllUsers();
     showPage(1);
   }
 
-  // Инициализация при загрузке DOM
   document.addEventListener('DOMContentLoaded', () => {
-    filteredUsers = getAllUsers(); // Инициализация со всеми пользователями
+    const dropdownButton = document.getElementById('roleDropdownButton');
+    const dropdown = document.getElementById('roleDropdown');
+    const selectedRoleSpan = document.getElementById('selectedRole');
+
+    // Toggle dropdown
+    dropdownButton.addEventListener('click', () => {
+      dropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdownButton.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+
+    dropdown.querySelectorAll('a').forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.preventDefault();
+        selectedValue = e.target.dataset.value;
+        selectedRoleSpan.textContent = e.target.textContent;
+        dropdown.classList.add('hidden');
+        filterUsers();
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', filterUsers);
+
+    document.getElementById('prevPage').addEventListener('click', () => showPage(currentPage - 1));
+    document.getElementById('nextPage').addEventListener('click', () => showPage(currentPage + 1));
+
+    filteredUsers = getAllUsers();
     updatePagination();
     showPage(1);
   });
 
-  // Обновить информацию о пагинации
   function updatePagination() {
     const total = filteredUsers.length;
     const totalPages = Math.ceil(total / itemsPerPage);
@@ -235,7 +301,6 @@ $get_all_users = $users->getAllUsers();
     document.getElementById('showingFrom').textContent = from;
     document.getElementById('showingTo').textContent = to;
 
-    // Update page numbers
     const pageNumbers = document.getElementById('pageNumbers');
     pageNumbers.innerHTML = '';
 
@@ -252,31 +317,15 @@ $get_all_users = $users->getAllUsers();
     }
   }
 
-  // Initialize immediately when DOM loads
-  document.addEventListener('DOMContentLoaded', () => {
-    filteredUsers = getAllUsers();
-    showPage(1); // This will also call updatePagination
-  });
-
-  // Показать определенную страницу
   function showPage(pageNum) {
     currentPage = pageNum;
     const start = (pageNum - 1) * itemsPerPage;
     const end = start + itemsPerPage;
 
-    // Скрыть всех пользователей
     getAllUsers().forEach(user => user.style.display = 'none');
 
-    // Показывать только пользователей для текущей страницы
     filteredUsers.slice(start, end).forEach(user => user.style.display = '');
 
     updatePagination();
   }
-
-  document.getElementById('searchInput').addEventListener('input', filterUsers);
-  document.getElementById('roleFilter').addEventListener('change', filterUsers);
-  document.getElementById('prevPage').addEventListener('click', () => showPage(currentPage - 1));
-  document.getElementById('nextPage').addEventListener('click', () => showPage(currentPage + 1));
-
-  filterUsers();
 </script>
