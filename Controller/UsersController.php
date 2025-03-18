@@ -31,6 +31,34 @@ class UserController
     }
   }
 
+  public function updateUser($id, $name, $email)
+  {
+    try {
+      $sql = "UPDATE users SET name = :name, email = :email WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':name', $name);
+      $stmt->bindParam(':email', $email);
+      $stmt->bindParam(':id', $id);
+      return $stmt->execute();
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при обновлении пользователя");
+    }
+  }
+
+  public function updatePassword($id, $password)
+  {
+    try {
+      $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+      $sql = "UPDATE users SET password = :password WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':password', $hashedPassword);
+      $stmt->bindParam(':id', $id);
+      return $stmt->execute();
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при обновлении пароля");
+    }
+  }
+
   public function deleteUser($id)
   {
     try {
@@ -112,5 +140,50 @@ class UserController
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+  public function getUserById($id)
+  {
+    try {
+      $sql = "SELECT * FROM users WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+      $stmt->execute();
+      return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при получении данных пользователя");
+    }
+  }
+  // Add these methods to your UserController class
+
+  public function updateUserWithoutPassword($id, $name, $email, $role)
+  {
+    try {
+      $sql = "UPDATE users SET name = :name, email = :email, role = :role WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':name', $name);
+      $stmt->bindParam(':email', $email);
+      $stmt->bindParam(':role', $role);
+      $stmt->bindParam(':id', $id);
+      return $stmt->execute();
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при обновлении пользователя: " . $e->getMessage());
+    }
+  }
+
+  public function updateUserWithPassword($id, $name, $email, $password, $role)
+  {
+    try {
+      $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+      $sql = "UPDATE users SET name = :name, email = :email, password = :password, role = :role WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindParam(':name', $name);
+      $stmt->bindParam(':email', $email);
+      $stmt->bindParam(':password', $hashedPassword);
+      $stmt->bindParam(':role', $role);
+      $stmt->bindParam(':id', $id);
+      return $stmt->execute();
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при обновлении пользователя: " . $e->getMessage());
+    }
   }
 }

@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if (empty($errors)) {
     try {
-      // Pass slug as second parameter if it's provided
       $result = empty($slug) ? $categories->createCategories($name) : $categories->createCategories($name, $slug);
       $success = true;
       $_POST = [];

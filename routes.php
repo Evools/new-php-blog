@@ -19,7 +19,10 @@ post('/sign-up', 'pages/auth/sign-up.php');
 get('/sign-in', 'pages/auth/sign-in.php');
 post('/login', 'pages/auth/sign-in.php');
 
-get('/profile', 'pages/profile/view.php');
+// Add these routes
+post('/profile/update', '/pages/profile/update.php');
+post('/profile/update-password', '/pages/profile/update-password.php');
+get('/profile', '/pages/profile/view.php');
 
 post('/logout', function () {
   session_start(); // Запускаем сессию (если не запущена)
@@ -57,7 +60,10 @@ get('/admin/posts', adminAuth('admin/posts/view.php'));
 get('/admin/users', adminAuth('admin/users/view.php'));
 post('/admin/users/create', adminAuth('admin/users/create.php'));
 get('/admin/users/create', adminAuth('admin/users/create.php'));
-get('/admin/users/edit', adminAuth('admin/users/edit.php'));
+
+get('/admin/users/edit/$id', '/admin/users/edit.php');
+post('/admin/users/edit/$id', '/admin/users/edit.php');
+
 post('/admin/users/delete', adminAuth('admin/users/delete.php'));
 
 any('/404', 'pages/404.php');
