@@ -107,4 +107,16 @@ class CategoriesController
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function deleteCategory($id)
+  {
+    try {
+      $sql = "DELETE FROM categories WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+      return $stmt->execute();
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при удалении категории");
+    }
+  }
 }

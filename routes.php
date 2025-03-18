@@ -44,16 +44,19 @@ function adminAuth($path)
 }
 
 get('/admin', adminAuth('admin/dashboard.php'));
-get('/admin/categories', adminAuth('admin/categories.php'));
+get('/admin/categories', adminAuth('admin/categories/view.php'));
+get('/admin/categories/create', adminAuth('admin/categories/create.php'));
+post('/admin/categories/create', adminAuth('admin/categories/create.php'));
+post('/admin/categories/delete', adminAuth('admin/categories/delete.php'));
+
+
+
 get('/admin/posts', adminAuth('admin/posts/view.php'));
 
-// Update the users routes
 get('/admin/users', adminAuth('admin/users/view.php'));
-// Update or add this route
-post('/admin/users/delete', adminAuth('admin/users/delete.php'));
 post('/admin/users/create', adminAuth('admin/users/create.php'));
-
-get('/admin/users/edit', adminAuth('admin/users/edit.php'));
 get('/admin/users/create', adminAuth('admin/users/create.php'));
+get('/admin/users/edit', adminAuth('admin/users/edit.php'));
+post('/admin/users/delete', adminAuth('admin/users/delete.php'));
 
 any('/404', 'pages/404.php');
