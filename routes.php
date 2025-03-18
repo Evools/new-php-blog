@@ -8,7 +8,6 @@ function setSessionLifetime($days = 0, $hours = 0, $minutes = 0)
   session_set_cookie_params($lifetime);
   session_start();
 }
-
 // Использование
 setSessionLifetime(7, 0, 0); // Сессия сохранится на 7 дней
 
@@ -19,6 +18,8 @@ post('/sign-up', 'pages/auth/sign-up.php');
 
 get('/sign-in', 'pages/auth/sign-in.php');
 post('/login', 'pages/auth/sign-in.php');
+
+get('/profile', 'pages/profile/view.php');
 
 post('/logout', function () {
   session_start(); // Запускаем сессию (если не запущена)
