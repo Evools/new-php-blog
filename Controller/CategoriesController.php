@@ -11,15 +11,6 @@ class CategoriesController
 
   public function createCategories($name, $slug = null)
   {
-    $create_category_table = "CREATE TABLE IF NOT EXISTS `categories` (
-      id INT(11) AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      slug VARCHAR(255) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )";
-    $this->conn->exec($create_category_table);
-
     if (!$slug) {
       $slug = $this->generateSlug($name);
     }
