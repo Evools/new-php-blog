@@ -15,10 +15,9 @@ $totalUsers = $users->getTotalUsers();
 $totalCategories = $categories->getTotalCategories();
 $totalPosts = $posts->getTotalPosts();
 
-// Добавляем список последних постов, категорий и пользователей
-$recentPosts = $posts->getRecentPosts(5);
-$recentCategories = $categories->getRecentCategories(3);
-$recentUsers = $users->getRecentUsers(3);
+$recentPosts = $posts->getRecentPosts(8);
+$recentCategories = $categories->getRecentCategories(8);
+$recentUsers = $users->getRecentUsers(8);
 
 $titleName = "Админ панель";
 include "layout/head.php";
@@ -88,8 +87,8 @@ include "layout/head.php";
                 <div>
                   <h4 class="font-medium text-gray-800"><?= htmlspecialchars($post['title']) ?></h4>
                   <p class="text-sm text-gray-500">
-                    Автор: <?= htmlspecialchars($post['author_name']) ?>
-                    <?php if ($post['category_name']): ?>
+                    Автор: <?= htmlspecialchars($post['author_name'] ?? 'Неизвестный') ?>
+                    <?php if (!empty($post['category_name'])): ?>
                       • Категория: <?= htmlspecialchars($post['category_name']) ?>
                     <?php endif; ?>
                     • <?= date('d.m.Y H:i', strtotime($post['created_at'])) ?>
