@@ -22,17 +22,6 @@ include "layout/head.php";
       </a>
     </div>
 
-    <div class="mb-4 flex gap-4">
-      <div class="flex-1">
-        <input type="text" id="searchInput" placeholder="Поиск публикаций..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-      </div>
-      <select id="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-        <option value="">Все категории</option>
-        <option value="news">Новости</option>
-        <option value="articles">Статьи</option>
-      </select>
-    </div>
-
     <div class="bg-white rounded-lg shadow">
       <div class="overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-500">
@@ -79,21 +68,6 @@ include "layout/head.php";
             <?php endforeach; ?>
           </tbody>
         </table>
-      </div>
-
-      <!-- Pagination -->
-      <div class="flex items-center justify-between p-4 border-t">
-        <div class="text-sm text-gray-700">
-          Показано <span>1</span>-<span>10</span> из <span>20</span>
-        </div>
-        <div class="flex gap-2">
-          <button class="px-3 py-1 text-sm border rounded hover:bg-gray-50">Назад</button>
-          <div class="flex gap-2">
-            <button class="px-3 py-1 text-sm bg-blue-600 text-white rounded">1</button>
-            <button class="px-3 py-1 text-sm border rounded hover:bg-gray-50">2</button>
-          </div>
-          <button class="px-3 py-1 text-sm border rounded hover:bg-gray-50">Вперед</button>
-        </div>
       </div>
     </div>
   </div>
