@@ -2,71 +2,83 @@
 
 class PostController
 {
-  private $db;
+  private $conn;
 
-  public function __construct($db)
+  public function __construct($conn)
   {
-    $this->db = $db;
+    $this->conn = $conn;
   }
 
-  public function getTotalPosts()
+  public function getAllPosts()
   {
-    $query = "SELECT COUNT(*) as total FROM posts";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $result['total'];
-  }
+    $query = "SELECT posts.*, users.name as author_name, categories.name as category_name 
+              FROM posts 
+              LEFT JOIN users ON posts.user_id = users.id 
+              LEFT JOIN categories ON posts.category_id = categories.id 
+              ORDER BY posts.created_at DESC";
 
-  public function getRecentPosts($limit = 5)
-  {
-    $query = "SELECT p.id, p.title, p.created_at, p.status, u.name as author_name, c.name as category_name 
-              FROM posts p 
-              LEFT JOIN users u ON p.user_id = u.id 
-              LEFT JOIN categories c ON p.category_id = c.id 
-              ORDER BY p.created_at DESC LIMIT :limit";
-    $stmt = $this->db->prepare($query);
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt = $this->conn->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function createPost($title, $content, $category_id, $user_id)
+  public function deletePost($post_id)
   {
-    $query = "INSERT INTO posts (title, content, category_id, user_id, created_at) 
-              VALUES (:title, :content, :category_id, :user_id, NOW())";
-
-    $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':title', $title);
-    $stmt->bindParam(':content', $content);
-    $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
-    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-
-    return $stmt->execute();
+    try {
+      $query = "DELETE FROM posts WHERE id = ?";
+      $stmt = $this->conn->prepare($query);
+      return $stmt->execute([$post_id]);
+    } catch (PDOException $e) {
+      return false;
+    }
   }
 
-  public function updatePost($id, $title, $content, $category_id)
+  public function createPost($title, $content, $category_id, $user_id, $status = 'draft')
   {
-    $query = "UPDATE posts 
-              SET title = :title, 
-                  content = :content, 
-                  category_id = :category_id 
-              WHERE id = :id";
+    try {
+      $query = "INSERT INTO posts (title, content, category_id, user_id, status, created_at) 
+                  VALUES (?, ?, ?, ?, ?, NOW())";
 
-    $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->bindParam(':title', $title);
-    $stmt->bindParam(':content', $content);
-    $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
-
-    return $stmt->execute();
+      $stmt = $this->conn->prepare($query);
+      return $stmt->execute([$title, $content, $category_id, $user_id, $status]);
+    } catch (PDOException $e) {
+      return false;
+    }
   }
 
-  public function deletePost($id)
+  public function getPostById($id)
   {
-    $query = "DELETE FROM posts WHERE id = :id";
-    $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    return $stmt->execute();
+    $query = "SELECT posts.*, users.name as author_name, categories.name as category_name 
+              FROM posts 
+              LEFT JOIN users ON posts.user_id = users.id 
+              LEFT JOIN categories ON posts.category_id = categories.id 
+              WHERE posts.id = ?";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function updatePost($id, $title, $content, $status)
+  {
+    try {
+      $query = "UPDATE posts 
+                   SET title = ?, 
+                       content = ?, 
+                       status = ?,
+                       updated_at = NOW()
+                   WHERE id = ?";
+
+      $stmt = $this->conn->prepare($query);
+      $result = $stmt->execute([$title, $content, $status, $id]);
+
+      if (!$result) {
+        throw new Exception("Failed to update post");
+      }
+
+      return true;
+    } catch (PDOException $e) {
+      throw new Exception("Database error: " . $e->getMessage());
+    }
   }
 }

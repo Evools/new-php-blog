@@ -47,6 +47,7 @@ function adminAuth($path)
   };
 }
 
+// Dashboard
 get('/admin', adminAuth('admin/dashboard.php'));
 get('/admin/categories', adminAuth('admin/categories/view.php'));
 get('/admin/categories/create', adminAuth('admin/categories/create.php'));
@@ -54,16 +55,20 @@ post('/admin/categories/create', adminAuth('admin/categories/create.php'));
 post('/admin/categories/delete', adminAuth('admin/categories/delete.php'));
 
 
-
+// Posts
 get('/admin/posts', adminAuth('admin/posts/view.php'));
+get('/admin/posts/create', adminAuth('admin/posts/create.php'));
+post('/admin/posts/create', adminAuth('admin/posts/create.php'));
+get('/admin/posts/edit/$id', adminAuth('admin/posts/edit.php'));
+post('/admin/posts/edit/$id', adminAuth('admin/posts/edit.php'));
+post('/admin/posts/delete', adminAuth('admin/posts/delete.php'));
 
+// Users
 get('/admin/users', adminAuth('admin/users/view.php'));
-post('/admin/users/create', adminAuth('admin/users/create.php'));
 get('/admin/users/create', adminAuth('admin/users/create.php'));
-
+post('/admin/users/create', adminAuth('admin/users/create.php'));
 get('/admin/users/edit/$id', '/admin/users/edit.php');
 post('/admin/users/edit/$id', '/admin/users/edit.php');
-
 post('/admin/users/delete', adminAuth('admin/users/delete.php'));
 
 any('/404', 'pages/404.php');
