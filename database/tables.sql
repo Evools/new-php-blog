@@ -31,3 +31,24 @@ CREATE TABLE posts (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- Create Subscribers Table
+CREATE TABLE subscribers (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255),
+    status ENUM('active', 'unsubscribed') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create Newsletters Table
+CREATE TABLE newsletters (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    subject VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    status ENUM('draft', 'sent') DEFAULT 'draft',
+    sent_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

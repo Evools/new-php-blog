@@ -13,7 +13,7 @@ include "layout/head.php";
 ?>
 
 <main>
-  <?php include "admin/layout/sidebar.php"; ?>
+  <?php include "./admin/layout/sidebar.php"; ?>
   <div class="p-4 sm:ml-64 mt-16">
     <div class="mb-6 flex items-center justify-between">
       <h1 class="text-2xl font-semibold text-gray-900">Публикации</h1>

@@ -73,4 +73,18 @@ get('/admin/users/edit/$id', '/admin/users/edit.php');
 post('/admin/users/edit/$id', '/admin/users/edit.php');
 post('/admin/users/delete', adminAuth('admin/users/delete.php'));
 
+// Newsletters
+get('/admin/newsletters', adminAuth('admin/newsletters/view.php'));
+get('/admin/newsletters/create', adminAuth('admin/newsletters/create.php'));
+post('/admin/newsletters/create', adminAuth('admin/newsletters/create.php'));
+get('/admin/newsletters/edit/$id', adminAuth('admin/newsletters/edit.php'));
+post('/admin/newsletters/edit/$id', adminAuth('admin/newsletters/edit.php'));
+post('/admin/newsletters/delete', adminAuth('admin/newsletters/delete.php'));
+post('/admin/newsletters/send/$id', adminAuth('admin/newsletters/send.php'));
+
+// Subscribers
+get('/admin/subscribers', adminAuth('admin/subscribers/view.php'));
+post('/admin/subscribers/delete', adminAuth('admin/subscribers/delete.php'));
+post('/admin/subscribers/status', adminAuth('admin/subscribers/status.php'));
+
 any('/404', 'pages/404.php');
