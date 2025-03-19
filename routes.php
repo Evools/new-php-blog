@@ -52,6 +52,8 @@ get('/admin', adminAuth('admin/dashboard.php'));
 get('/admin/categories', adminAuth('admin/categories/view.php'));
 get('/admin/categories/create', adminAuth('admin/categories/create.php'));
 post('/admin/categories/create', adminAuth('admin/categories/create.php'));
+get('/admin/categories/edit/$id', adminAuth('admin/categories/edit.php'));
+post('/admin/categories/edit/$id', adminAuth('admin/categories/edit.php'));
 post('/admin/categories/delete', adminAuth('admin/categories/delete.php'));
 
 

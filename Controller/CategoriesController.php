@@ -119,4 +119,45 @@ class CategoriesController
       throw new Exception("Ошибка при удалении категории");
     }
   }
+
+  public function getCategoryById($id)
+  {
+    try {
+      $sql = "SELECT * FROM categories WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+      $stmt->execute();
+      $category = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if (!$category) {
+        throw new Exception("Категория не найдена");
+      }
+
+      return $category;
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при получении категории");
+    }
+  }
+
+  public function updateCategory($id, $name)
+  {
+    try {
+      if (empty($name)) {
+        throw new Exception("Название категории не может быть пустым");
+      }
+
+      $sql = "UPDATE categories SET name = :name WHERE id = :id";
+      $stmt = $this->conn->prepare($sql);
+      $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+      $stmt->bindParam(':name', $name);
+
+      if (!$stmt->execute()) {
+        throw new Exception("Ошибка при обновлении категории");
+      }
+
+      return true;
+    } catch (PDOException $e) {
+      throw new Exception("Ошибка при обновлении категории");
+    }
+  }
 }

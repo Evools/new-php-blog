@@ -138,6 +138,19 @@ include "layout/head.php";
           <label for="content" class="block text-sm font-medium text-gray-700">Контент</label>
           <textarea name="content" id="content" rows="10"
             class="mt-1 block w-full rounded-md border <?= isset($error['content']) ? 'border-red-300' : 'border-gray-300' ?> px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"><?= isset($data['content']) ? htmlspecialchars($data['content']) : '' ?></textarea>
+
+          <script src="https://cdn.tiny.cloud/1/cdrkywnx15k19w5nx0mss3ocsfzfdmgxzqdtg0x9b4oxiq3b/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+          <script>
+            tinymce.init({
+              selector: 'textarea',
+              plugins: 'link image lists table',
+              toolbar: 'undo redo | blocks | bold italic | link image table | numlist bullist | removeformat',
+              menubar: false,
+              height: 400,
+              branding: false
+            });
+          </script>
         </div>
 
         <div class="flex justify-end">

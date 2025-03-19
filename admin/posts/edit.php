@@ -1,10 +1,14 @@
 <?php
 require_once "./Controller/DatabaseController.php";
 require_once "./Controller/PostController.php";
+require_once "./Controller/CategoryController.php";
 
 $db = DatabaseController::getInstance();
 $conn = $db->getConnect();
 $posts = new PostController($conn);
+$categoryController = new CategoryController($conn);
+
+$categories = $categoryController->getAllCategories();
 
 $urlParts = explode('/', $_SERVER['REQUEST_URI']);
 $postId = (int)end($urlParts);
@@ -14,21 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title']);
   $content = trim($_POST['content']);
   $status = $_POST['status'];
+  $category = (int)$_POST['category'];
 
   try {
     if (empty($title) || empty($content)) {
       throw new Exception("Заголовок и содержание обязательны для заполнения");
     }
 
-    $posts->updatePost($postId, $title, $content, $status);
+    $posts->updatePost($postId, $title, $content, $status, $category);
     $_SESSION['success_message'] = "Пост успешно обновлен";
-    header('Location: /admin/posts/edit/' . $postId);
-    exit();
   } catch (Exception $e) {
     $_SESSION['error_message'] = $e->getMessage();
   }
 }
 
+// Get post data after possible update
 try {
   $post = $posts->getPostById($postId);
   if (!$post) {
@@ -83,6 +87,21 @@ include "layout/head.php";
             <label for="content" class="block text-sm font-medium text-gray-700">Содержание</label>
             <textarea name="content" id="content" rows="10"
               class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"><?= htmlspecialchars($post['content']) ?></textarea>
+
+            <!-- TinyMCE Script -->
+            <script src="https://cdn.tiny.cloud/1/cdrkywnx15k19w5nx0mss3ocsfzfdmgxzqdtg0x9b4oxiq3b/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+            <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+            <script>
+              tinymce.init({
+                selector: 'textarea',
+                plugins: 'link image lists table',
+                toolbar: 'undo redo | blocks | bold italic | link image table | numlist bullist | removeformat',
+                menubar: false,
+                height: 400,
+                branding: false
+              });
+            </script>
           </div>
 
           <div>
