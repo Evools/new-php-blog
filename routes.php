@@ -40,7 +40,7 @@ function adminAuth($path)
 {
   return function () use ($path) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
-      header("Location: /");
+      header("Location: /404");
       exit();
     }
     require __DIR__ . '/' . $path;
